@@ -1,23 +1,24 @@
 # .github/workflows/scrape.yml
-
 name: Hourly Table Scrape
 
 on:
+  # Manual trigger in the UI
+  workflow_dispatch:
+  # Cron schedule: at minute 0 of every hour (UTC)
   schedule:
-    # Every hour on the hour, UTC time
-    - cron:  '0 * * * *'
+    - cron: '0 * * * *'
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-
-    # Inject our Supabase secrets into the runner's env
     env:
+      # these must be set in your repo Settings → Secrets → Actions
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v3
 
       - name: Install system Chromium
         run: |
