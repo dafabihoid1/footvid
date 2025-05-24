@@ -2,10 +2,7 @@
 name: Hourly Table Scrape
 
 on:
-  # enable manual runs from the UI
   workflow_dispatch:
-
-  # keep your hourly schedule
   schedule:
     - cron: '0 * * * *'
 
@@ -15,11 +12,23 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+
+      # Install the system Chromium (with sandbox support)
+      - name: Install chromium-browser
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: npm ci
-      - run: npx playwright install   
-      - run: npm run scrape
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run scraper & save to Supabase
+        run: npm run scrape
