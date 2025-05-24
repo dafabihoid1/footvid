@@ -17,7 +17,7 @@ async function main() {
 
   // 2) Fetch new table data
   const rows = await fetchLeibenTable()
-
+console.log(rows);
   // 3) Insert into Supabase
   for (const entry of rows) {
     const { error: insertError } = await supabase
