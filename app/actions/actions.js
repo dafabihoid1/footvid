@@ -1,6 +1,5 @@
 
 'use server'
-export const runtime = 'nodejs';
 import { fetchLeibenGamePlan, fetchLeibenTable } from "@/lib/scraper.js"
 import { supabase } from "../../lib/supabaseClient.js"
 

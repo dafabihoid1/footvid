@@ -5,7 +5,7 @@ name: Hourly Table Scrape
 on:
   schedule:
     # Every hour on the hour, UTC time
-    - cron:  '13 * * * *'
+    - cron:  '16 * * * *'
 
 jobs:
   scrape:
