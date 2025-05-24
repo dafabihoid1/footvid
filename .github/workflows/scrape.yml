@@ -13,11 +13,10 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
-    steps:
+      steps:
       - uses: actions/checkout@v3
 
-      # Install the system Chromium (with sandbox support)
-      - name: Install chromium-browser
+      - name: Install system Chromium
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
