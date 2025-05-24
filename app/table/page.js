@@ -1,19 +1,29 @@
 "use client";
 import React from "react";
-import { scrapeTableData } from "../actions/actions.js";
 import Navbar from "../Navbar.jsx";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.jsx";
 import CustomLoader from "@/components/ui/loader.jsx";
 import useServerAction from "../hooks/useServerAction.js";
+import useSWR from "swr";
 
 // force this page to re-render on every request
 export const dynamic = "force-dynamic";
 
+const fetcher = (url) =>
+  fetch(url).then(res => {
+    if (!res.ok) throw new Error('Network error')
+    return res.json()
+  })
+
 export default function TablePage() {
     // const [tabelle, setTabelle] = React.useState(null);
 
-    const { data: tabelle, isLoading: tabelleLoading, error: tabelleError, mutate: mutateTabelle} = useServerAction("TableData", scrapeTableData);
 
+      const { data: tabelle, isLoading: tabelleLoading, error: tabelleError, mutate: mutateTabelle } = useSWR(
+    '/api/scrapeTable',
+    fetcher,
+  )
+  
  
     return (
         <>
