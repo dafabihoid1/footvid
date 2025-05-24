@@ -1,35 +1,28 @@
-import { fetchLeibenTable, fetchLeibenGamePlan } from '../lib/scraper.js'
-import { createClient } from '@supabase/supabase-js'
-import 'dotenv/config'
+// scripts/scrape-and-save.js
+import { fetchLeibenTable, fetchLeibenGamePlan } from "../lib/scraper.js";
+import { clearTabelle, insertTabelle }        from "../lib/db-actions.js";  // your supabase actions
 
 async function main() {
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  )
+  try {
+    console.log("⏳ Clearing old table…");
+    await clearTabelle();
 
-  // 1) Clear the old table
-  const { error: clearError } = await supabase
-    .from('tabelle')
-    .delete()
-    .gt('id', 0)
-  if (clearError) throw clearError
+    console.log("⏳ Fetching standings…");
+    const tableRows = await fetchLeibenTable();
+    console.log(`✅ Got ${tableRows.length} rows, inserting…`);
+    for (const row of tableRows) {
+      await insertTabelle(row);
+    }
 
-  // 2) Fetch new table data
-  const rows = await fetchLeibenTable()
-console.log(rows);
-  // 3) Insert into Supabase
-  for (const entry of rows) {
-    const { error: insertError } = await supabase
-      .from('tabelle')
-      .insert([entry])
-    if (insertError) throw insertError
+    console.log("⏳ Fetching game plan…");
+    const games = await fetchLeibenGamePlan();
+    console.log("✅ Games:", games);
+
+    console.log("🎉 All done!");
+  } catch (err) {
+    console.error("❌ Scrape job failed:", err);
+    process.exit(1);
   }
-
-  console.log(`✅ Scraped & saved ${rows.length} table rows`)
 }
 
-main().catch(err => {
-  console.error('❌ Scrape job failed:', err)
-  process.exit(1)
-})
+main();
