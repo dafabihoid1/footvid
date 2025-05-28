@@ -44,17 +44,3 @@ export async function clearTabelle() {
 
   return data
 }
-
-export async function scrapeTableData() {
- 
-  const rows = await fetchLeibenTable();
-
-  return rows;
-}
-
-export async function scrapeGamePlanData() {
- 
-  const rows = await fetchLeibenGamePlan();
-
-  return rows;
-}

@@ -15,7 +15,7 @@ import { Menu, X } from "lucide-react"
 
 export default function Navbar() {
   return (
-    <header className="fixed top-0 w-full dark:bg-[#003d11] shadow z-20 border-b dark:border-gray-200">
+    <header className="fixed top-0 w-full bg-[#003d11] shadow z-20 border-b border-gray-200">
       <nav className="container mx-auto flex items-center justify-between p-4">
         <Link href="/">
             <img src='/logo.png' className='h-16'></img>
