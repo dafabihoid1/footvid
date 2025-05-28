@@ -78,15 +78,11 @@ export default function InstallPrompt() {
                             {isAndroidChrome ? (
                                 // Android Chrome: native prompt
                                 <>
-                                    <MoreVertical
-                                        className="w-5 h-5 text-foreground flex-shrink-0 cursor-pointer"
-                                        onClick={handleAndroidInstall}
-                                    />
                                     <button
                                         onClick={handleAndroidInstall}
                                         className="underline text-left text-foreground"
                                     >
-                                        Zum Startbildschirm hinzufügen
+                                        Klicke hier zum Installieren!
                                     </button>
                                 </>
                             ) : isAndroidOther ? (
@@ -98,7 +94,7 @@ export default function InstallPrompt() {
                             ) : (
                                 // iOS Safari
                                 <>
-                                    Safari → <Share className="w-5 h-5 text-foreground flex-shrink-0" />
+                                   <span>Safari → </span> <Share className="w-5 h-5 text-foreground flex-shrink-0" />
                                     <span>→ Zum Home-Bildschirm</span>
                                 </>
                             )}
