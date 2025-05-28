@@ -4,58 +4,61 @@ import { useEffect, useState } from "react";
 import { X, Smartphone, Share, MoreVertical } from "lucide-react";
 
 export default function InstallPrompt() {
-    const [show, setShow] = useState(false);
-   const [deferredPrompt, setDeferredPrompt] = useState(null);
-    const [isAndroidOther, setIsAndroidOther] = useState(false);
+  const [show, setShow] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isAndroidOther, setIsAndroidOther] = useState(false);
 
-    useEffect(() => {
-        const ua = navigator.userAgent;
-        const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-        const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
-        const isStandalone =
-            window.navigator.standalone === true || window.matchMedia("(display-mode: standalone)").matches;
+  useEffect(() => {
+    const ua = navigator.userAgent;
+    const isIOS     = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    const isAndroid = /Android/.test(ua) && /Chrome/.test(ua);
+    const isSafari  = /^((?!chrome|android).)*safari/i.test(ua);
+    const isStandalone =
+      window.navigator.standalone === true ||
+      window.matchMedia('(display-mode: standalone)').matches;
 
-        // Android Chrome: listen for the prompt event
-        function onBeforeInstallPrompt(e) {
-            e.preventDefault();
-            setDeferredPrompt(e);
-            setShow(true);
+    // Bail out on desktop (neither Android Chrome nor iOS Safari)
+    if (!isAndroid && !(isIOS && isSafari)) {
+      return;
+    }
+
+    // Android Chrome: listen for beforeinstallprompt
+    if (isAndroid) {
+      function onBeforeInstallPrompt(e) {
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setShow(true);
+      }
+      window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+
+      // If Chrome never fires, assume “other” Android browser
+      setTimeout(() => {
+        if (!deferredPrompt) {
+          setIsAndroidOther(true);
+          setShow(true);
         }
-        window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+      }, 500);
 
-        
-        // Android but NO prompt event = "other" browsers
-        const isAndroid = /Android/.test(ua);
-        if (isAndroid && !window.matchMedia("(display-mode: standalone)").matches) {
-            // If Chrome didn't fire beforeinstallprompt within a tick,
-            // assume it's a different Android browser
-            setTimeout(() => {
-                if (!deferredPrompt) {
-                    setIsAndroidOther(true);
-                    setShow(true);
-                }
-            }, 500);
-        }
+      return () => {
+        window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+      };
+    }
 
-        // iOS Safari fallback
-        if (isIOS && isSafari && !isStandalone) {
-            setShow(true);
-        }
+    // iOS Safari fallback
+    if (isIOS && isSafari && !isStandalone) {
+      setShow(true);
+    }
+  }, [deferredPrompt]);
 
-        return () => {
-            window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
-        };
-    }, [deferredPrompt]);
+  if (!show) return null;
 
-    if (!show) return null;
+  const isAndroidChrome = deferredPrompt != null;
 
-    const isAndroidChrome = !!deferredPrompt;
-    const handleAndroidInstall = async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-        setShow(false);
-    };
+  const handleAndroidInstall = async () => {
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    setShow(false);
+  };
 
     return (
         <div className="fixed bottom-4 inset-x-1 flex justify-center px-4 z-50">
