@@ -1,70 +1,78 @@
 "use client"
-import React from 'react'
-import Link from 'next/link'
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
-  NavigationMenuLink
-} from "@/components/ui/navigation-menu"
+
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog"
-import { Menu, X } from "lucide-react"
+import {
+  Menu,
+  X,
+  Calendar,
+  Table,
+  Video,
+  Image,
+  User,
+} from "lucide-react"
 
 export default function Navbar() {
+  const pathname = usePathname()
+
+  const links = [
+    { href: "/gameplan", label: "Spielplan", Icon: Calendar },
+    { href: "/table",    label: "Tabelle",   Icon: Table },
+    { href: "/docs",     label: "Videos",    Icon: Video },
+    { href: "/photos",   label: "Fotos",     Icon: Image },
+  ]
+
+  const renderLink = ({ href, label, Icon }) => {
+    const isActive = pathname === href
+    return (
+      <Link
+        key={href}
+        href={href}
+        className={
+          "flex items-center space-x-2 px-2 py-1 rounded transition duration-200 " +
+          (isActive
+            ? "text-primary font-semibold underline decoration-primary underline-offset-4"
+            : "text-foreground hover:text-primary hover:scale-105")
+        }
+      >
+        <Icon size={18} />
+        <span>{label}</span>
+      </Link>
+    )
+  }
+
   return (
-    <header className="fixed top-0 w-full dark:bg-[#003d11] shadow z-20 border-b dark:border-gray-200">
+    <header className="fixed top-0 w-full bg-[#003d11] text-foreground shadow z-20 border-b border-border">
       <nav className="container mx-auto flex items-center justify-between p-4">
-        <Link href="/">
-            <img src='/logo.png' className='h-16'></img>
+        <Link href="/" className="flex items-center">
+          <img src="/logo.png" alt="Logo" className="h-16" />
         </Link>
 
-        {/* Desktop Menu */}
+        {/* Desktop */}
         <div className="hidden md:flex items-center space-x-6">
-          <NavigationMenu>
-            <NavigationMenuList>
-             
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="/gameplan" className="hover:text-primary">Spielplan</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="/table" className="hover:text-primary">Tabelle</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>  
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="/docs" className="hover:text-primary">Videos</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="/docs" className="hover:text-primary">Fotos</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-
-          <Link href="/signin">
-            <Button variant="ghost" size="sm">Sign In</Button>
+          {links.map(renderLink)}
+          <Link
+            href="/signin"
+            className="flex items-center space-x-2 text-foreground hover:text-primary transition duration-200"
+          >
+            <User size={18} />
+            <span>Sign In</span>
           </Link>
           <Link href="/signup">
             <Button size="sm">Sign Up</Button>
           </Link>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile */}
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="ghost" className="md:hidden">
               <Menu size={24} />
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-xs w-full p-6">
+          <DialogContent className="sm:max-w-xs w-full p-6 bg-card text-foreground">
             <div className="flex items-center justify-between mb-6">
               <span className="text-xl font-bold">MyLogo</span>
               <DialogTrigger asChild>
@@ -74,12 +82,15 @@ export default function Navbar() {
               </DialogTrigger>
             </div>
             <div className="flex flex-col space-y-4">
-              <Link href="/products/analytics" className="text-lg font-medium">Analytics</Link>
-              <Link href="/products/engagement" className="text-lg font-medium">Engagement</Link>
-              <Link href="/products/security" className="text-lg font-medium">Security</Link>
-              <Link href="/pricing" className="text-lg font-medium">Pricing</Link>
-              <Link href="/docs" className="text-lg font-medium">Docs</Link>
-              <Link href="/signin" className="text-lg font-medium">Sign In</Link>
+              {links.map(renderLink)}
+              <hr className="border-border my-2" />
+              <Link
+                href="/signin"
+                className="flex items-center space-x-2 text-lg font-medium hover:text-primary transition duration-200"
+              >
+                <User size={18} />
+                <span>Sign In</span>
+              </Link>
               <Link href="/signup">
                 <Button className="w-full">Sign Up</Button>
               </Link>

@@ -1,8 +1,6 @@
-// next.config.js
+import nextPWA from 'next-pwa';       
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // ...any other options you already had...
-
   webpack(config, { isServer }) {
     if (!isServer) {
       config.resolve.fallback = {
@@ -10,10 +8,17 @@ const nextConfig = {
         dns: false,
         net: false,
         tls: false,
-      }
+      };
     }
-    return config
+    return config;
   },
-}
+};
 
-export default nextConfig
+const withPWA = nextPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+});
+
+export default withPWA(nextConfig);

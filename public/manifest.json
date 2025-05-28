@@ -1,0 +1,9 @@
+{
+  "name":        "Sv Leiben",
+  "short_name":  "SvLeiben",
+  "description": "Sv Leiben interne App",
+  "start_url":   "/",
+  "display":     "standalone",
+  "background_color": "#000000",
+  "theme_color":      "#003d11"
+}
