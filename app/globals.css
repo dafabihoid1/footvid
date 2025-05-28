@@ -161,6 +161,10 @@
   main {
     @apply container mx-auto mt-[96px] sm:mt-[15vh] ;
   }
+   html.dark {
+    /* tell the browser this page uses a dark color-scheme */
+    color-scheme: dark;
+  }
 }
 
 
