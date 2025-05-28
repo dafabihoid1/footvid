@@ -2,7 +2,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
-import InstallPWAButton from "@/components/InstallPWAButton";
 import IOSInstallHint from "@/components/IOSInstallHint";
 
 const geistSans = Geist({
@@ -46,7 +45,6 @@ export default function RootLayout({ children }) {
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <ServiceWorkerRegister />
                 {children}
-                <InstallPWAButton />
                  <IOSInstallHint />
             </body>
         </html>
