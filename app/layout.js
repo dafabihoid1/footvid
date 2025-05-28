@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import InstallPWAButton from "@/components/InstallPWAButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
