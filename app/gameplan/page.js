@@ -8,37 +8,37 @@ import { getGamePlan } from "../actions/actions";
 import Loader from "@/components/ui/loader";
 
 export default function GamePlan_Page() {
-  const { data: games = [], error, isLoading } = useServerAction("gameplan", getGamePlan);
-  
-  if (error) return <p className="text-red-600">Error loading games</p>;
-  
-  const mobileListRef = useRef(null);
+   const { data: games = [], error, isLoading } = useServerAction("gameplan", getGamePlan);
   const [showAll, setShowAll] = useState(false);
-const [showAllUpcoming, setShowAllUpcoming] = useState(false);
-  
-// sort all games by date ascending
+  const [showAllUpcoming, setShowAllUpcoming] = useState(false);
+  const mobileListRef = useRef(null);
+
+  // Always call hooks before returning early
+  useEffect(() => {
+    const container = mobileListRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [games]);
+
+  // Early return after hooks
+  if (error) return <p className="text-red-600">Error loading games</p>;
+
+  // sort all games by date ascending
   const now = new Date();
   const allGames = games
     .map((g) => ({ ...g, dateObj: new Date(g.date) }))
     .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
 
-    const upcomingAll = allGames.filter(g => g.dateObj >= now);
-const playedAll   = allGames.filter(g => g.dateObj <  now).reverse();
+  // desktop splits
+  const upcomingAll = allGames.filter((g) => g.dateObj >= now);
+  const playedAll = allGames.filter((g) => g.dateObj < now).reverse();
+  const upcoming = showAllUpcoming ? upcomingAll : upcomingAll.slice(0, 5);
+  const played = showAll ? playedAll : playedAll.slice(0, 5);
 
-// Only show first 5 unless toggled
-const upcoming = showAllUpcoming ? upcomingAll : upcomingAll.slice(0, 5);
-const played   = showAll      ? playedAll   : playedAll.slice(0, 5);
-
-  // For mobile: show oldest first, scroll to bottom for newest
+  // mobile list: oldest first
   const mobileGames = [...allGames];
 
-  useEffect(() => {
-    const container = mobileListRef.current;
-    if (container && container.children.length > 0) {
-      const last = container.children[container.children.length - 1];
-      last.scrollIntoView({ block: "start" });
-    }
-  }, [games]);
 
   return (
     <>
