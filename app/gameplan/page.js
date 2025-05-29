@@ -1,10 +1,16 @@
 
+"use client"
 import React from "react";
 import Navbar from "../Navbar";
 import Gameplan_Card from "@/components/ui/gameplan_card";
-import { fetchLeibenGamePlan} from "@/lib/scraper";
+import useServerAction from "../hooks/useServerAction";
+import { getGamePlan } from "../actions/actions";
 
 const GamePlan_Page = () => {
+
+    const {data: data, eror: error, isLoading: isLoading, mutate: refreshData} = useServerAction("gameplan", getGamePlan);
+  
+    console.log(data);
      const fixtures = [
     { date: "Fr. 25.04.", time: "20:00", competition: "Liga", home: "Ybbsitz", away: "Leiben", score: "4:2" },
     { date: "Sa. 26.04.", time: "18:30", competition: "Cup",   home: "X-Team",  away: "Y-Team",  score: "1:3" },

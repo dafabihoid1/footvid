@@ -19,6 +19,19 @@ export async function getTabelle() {
 
     return data;
 }
+export async function getGamePlan() {
+    const { data, error } = await supabase
+        .from("spielplan")
+        .select("*")
+        .order("date", { ascending: true }); 
+
+    if (error) {
+        console.error("Error fetching tabelle:", error);
+        return [];
+    }
+
+    return data;
+}
 
 export async function insertTabelle(entry) {
     const { data, error } = await supabase.from("tabelle").insert([entry]); // wrap your entry in an array
