@@ -1,10 +1,7 @@
-# .github/workflows/scrape.yml
 name: Hourly Table Scrape
 
 on:
-  # Manual trigger in the UI
   workflow_dispatch:
-  # Cron schedule: at minute 0 of every hour (UTC)
   schedule:
     - cron: '0 * * * *'
 
@@ -12,7 +9,6 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     env:
-      # these must be set in your repo Settings → Secrets → Actions
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 

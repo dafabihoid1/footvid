@@ -1,7 +1,8 @@
+
 import React from "react";
 import Navbar from "../Navbar";
 import Gameplan_Card from "@/components/ui/gameplan_card";
-import { Separator } from '@radix-ui/react-separator'
+import { fetchLeibenGamePlan} from "@/lib/scraper";
 
 const GamePlan_Page = () => {
      const fixtures = [
