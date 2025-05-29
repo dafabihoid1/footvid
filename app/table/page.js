@@ -3,7 +3,7 @@ import React from "react";
 import { getTabelle, scrapeTableData } from "../actions/actions.js";
 import Navbar from "../Navbar.jsx";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.jsx";
-import CustomLoader from "@/components/ui/loader.jsx";
+import Loader from "@/components/ui/loader.jsx";
 import useServerAction from "../hooks/useServerAction.js";
 import { formatUpdatedAt } from "@/lib/utils.js";
 import { Card } from "@/components/ui/card.jsx";
@@ -25,7 +25,7 @@ export default function TablePage() {
         <>
             <Navbar></Navbar>
             <main>
-                {tabelleLoading == true && <CustomLoader />}
+                {tabelleLoading == true && <Loader />}
                 {tabelleLoading == false && (
                     <div className="overflow-hidden bg-primary-foreground animate-fade-in-up">
                         <Table className="w-full mb-0 !rounded-md">
