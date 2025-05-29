@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import InstallPrompt from "@/components/InstallPrompt";
+import { SupabaseProvider } from "@/components/SupabaseProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -20,32 +21,22 @@ const geistMono = Geist_Mono({
 //     manifest: "/manifest.json",
 // };
 
-
 export default function RootLayout({ children }) {
     return (
         <html lang="de" className="dark">
-           <head>
-       {/* PWA manifest for Android/Chrome/etc */}
-       <link rel="manifest" href="/manifest.json" />
-
-       {/* theme-color for Chrome on Android */}
-       <meta name="theme-color" content="#003d11" />
-
-      {/* iOS “Add to Home Screen” support */}
-       <meta name="apple-mobile-web-app-capable" content="yes" />
-       <meta
-         name="apple-mobile-web-app-status-bar-style"
-         content="black-translucent"
-       />
-       <link
-         rel="apple-touch-icon"
-         href="/icons/icon-192.png"
-       />
-     </head>
+            <head>
+                <link rel="manifest" href="/manifest.json" />
+                <meta name="theme-color" content="#003d11" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+                <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+            </head>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <ServiceWorkerRegister />
-                {children}
-                 <InstallPrompt />
+                <SupabaseProvider>
+                    <ServiceWorkerRegister />
+                    {children}
+                    <InstallPrompt />
+                </SupabaseProvider>
             </body>
         </html>
     );
