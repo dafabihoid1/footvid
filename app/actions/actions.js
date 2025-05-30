@@ -20,10 +20,7 @@ export async function getTabelle() {
     return data;
 }
 export async function getGamePlan() {
-    const { data, error } = await supabase
-        .from("spielplan")
-        .select("*")
-        .order("date", { ascending: true }); 
+    const { data, error } = await supabase.from("spielplan").select("*").order("date", { ascending: true });
 
     if (error) {
         console.error("Error fetching tabelle:", error);
@@ -61,6 +58,30 @@ export async function login(data) {
     }
 
     return res;
+}
+
+export async function register(data) {
+    const cookieStore = await cookies();
+
+    const supabase = createServerActionClient({ cookies: () => cookieStore });
+
+    const { data: res, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+    });
+
+    const userId = res.user.id;
+console.log(userId);
+    const { data: test, error: error1 } = await supabase.schema("public").from("users").insert({
+        id: userId,
+        firstname: data.firstname,
+        lastname: data.lastname,
+    });
+
+    if (error) {
+        return { error };
+    }
+    return { user: res.user, session: res.session };
 }
 
 export async function logout() {

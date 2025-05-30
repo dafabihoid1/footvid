@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import Navbar from "../Navbar";
+import Navbar from "../../components/Navbar";
 import Gameplan_Card from "@/components/ui/gameplan_card";
 import Gameplan_Card_Mobile from "@/components/ui/gameplan_card_mobile";
 import useServerAction from "../hooks/useServerAction";

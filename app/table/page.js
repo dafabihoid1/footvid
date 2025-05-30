@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { getTabelle, scrapeTableData } from "../actions/actions.js";
-import Navbar from "../Navbar.jsx";
+import Navbar from "../../components/Navbar.jsx";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.jsx";
 import Loader from "@/components/ui/loader.jsx";
 import useServerAction from "../hooks/useServerAction.js";
