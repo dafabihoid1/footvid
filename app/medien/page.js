@@ -1,13 +1,13 @@
 import React from 'react'
-import Navbar from '../Navbar'
+import Navbar from '../../components/Navbar'
 
-const Videos = () => {
+const Fotos = () => {
   return (
-     <>
+    <>
     <Navbar></Navbar>
     <main className='container'>Wird noch entwickelt</main>
-  </>
+    </>
   )
 }
 
-export default Videos
+export default Fotos

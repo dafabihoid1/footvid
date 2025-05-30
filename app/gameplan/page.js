@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import Navbar from "../Navbar";
+import Navbar from "../../components/Navbar";
 import Gameplan_Card from "@/components/ui/gameplan_card";
 import Gameplan_Card_Mobile from "@/components/ui/gameplan_card_mobile";
 import useServerAction from "../hooks/useServerAction";
@@ -54,7 +54,7 @@ export default function GamePlan_Page() {
               <div
                 className="
                   flex flex-col
-                  h-[calc(100vh-6rem)]
+                  h-[calc(100vh-6rem-4.5rem)]
                   overflow-y-auto overscroll-contain
                 "
               >
