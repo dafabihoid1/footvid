@@ -26,7 +26,7 @@ export default function TablePage() {
     return (
         <>
             <Navbar></Navbar>
-            <main>
+            <main className="pb-[76px]">
                 {tabelleLoading == true && <Loader />}
                 {tabelleLoading == false && (
                     <>
@@ -80,7 +80,7 @@ export default function TablePage() {
                             </div>
                         </div>
                         <div className="overflow-hidden bg-primary-foreground animate-fade-in-up">
-                            <Table className="w-full mb-0 !rounded-md">
+                            <Table className="w-full mb-0 !rounded-md !h-4 scroll-auto">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>#</TableHead>
