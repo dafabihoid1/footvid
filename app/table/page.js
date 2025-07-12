@@ -34,7 +34,7 @@ export default function TablePage() {
                             <div>
                                 <button
                                     onClick={() => setTeamMenuOpen((open) => !open)}
-                                    className="inline-flex justify-center w-full px-4 py-2 bg-background-foreground text-md text-foreground hover:bg-gray-50 focus:outline-none"
+                                    className="inline-flex justify-center w-full px-4 py-2 bg-background-foreground text-md text-foreground"
                                 >
                                     {activeTeam} Spielplan
                                     <svg
@@ -61,18 +61,18 @@ export default function TablePage() {
                                                     setActiveTeam("KM");
                                                     setTeamMenuOpen(false);
                                                 }}
-                                                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                                                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-500"
                                             >
                                                 KM Spielplan
                                             </button>
                                             <button
                                                 onClick={() => {
-                                                    setActiveTeam("RES");
+                                                    setActiveTeam("Res");
                                                     setTeamMenuOpen(false);
                                                 }}
-                                                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                                                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-500"
                                             >
-                                                RES Spielplan
+                                                Res Spielplan
                                             </button>
                                         </div>
                                     </div>
@@ -95,7 +95,7 @@ export default function TablePage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {tabelle?.map((row) => (
+                                    {tabelle?.filter((row) => row.Team === activeTeam).map((row) => (
                                         <TableRow
                                             key={row.Rang}
                                             className={row.Mannschaft === "Leiben" ? "bg-[#003d11]  font-semibold" : ""}
