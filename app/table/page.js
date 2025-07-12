@@ -54,7 +54,7 @@ export default function TablePage() {
                                 </button>
 
                                 {teamMenuOpen && (
-                                    <div className="w-full text-foreground bg-background-foreground text-center absolute z-10 mt-2 w-36 left-1/2 -translate-x-1/2 rounded-md shadow-lg focus:outline-none">
+                                    <div className="text-foreground bg-background-foreground text-center absolute z-10 mt-2 w-36 left-1/2 -translate-x-1/2 rounded-md shadow-lg focus:outline-none">
                                         <div className="py-1">
                                             <button
                                                 onClick={() => {
