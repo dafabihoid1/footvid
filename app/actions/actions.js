@@ -65,7 +65,7 @@ export async function register(data) {
 
     const supabase = createServerActionClient({ cookies: () => cookieStore });
 
-    const { data: res, error:authError } = await supabase.auth.signUp({
+    const { data: res, error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
     });
@@ -110,4 +110,23 @@ export async function clearTabelle() {
     }
 
     return data;
+}
+
+export async function getTeamLogos() {
+    const { data, error } = await supabase.storage.from("logos").list();
+
+    if (error) {
+        console.error("Error fetching logos:", error);
+        return [];
+    }
+
+    return data
+        .filter(file => file.name) // Filter out folders
+        .map(file => {
+            const { data: urlData } = supabase.storage.from("logos").getPublicUrl(file.name);
+            return {
+                name: file.name,
+                url: urlData.publicUrl,
+            };
+        });
 }

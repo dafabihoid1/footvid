@@ -1,6 +1,10 @@
-import nextPWA from 'next-pwa';       
+import nextPWA from 'next-pwa';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: ['jbodvdcvxspbbolbynyl.supabase.co'],
+  },
   webpack(config, { isServer }) {
     if (!isServer) {
       config.resolve.fallback = {
