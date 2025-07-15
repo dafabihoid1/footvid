@@ -30,7 +30,7 @@ export default function TablePage() {
                 {tabelleLoading == true && <Loader />}
                 {tabelleLoading == false && (
                     <>
-                        <div className="sticky top-0 z-10 bg-card p-3 flex justify-center items-center">
+                        <div className="sticky top-0 z-10 bg-card p-3 flex justify-center items-center !rounded-t-md">
                             <div>
                                 <button
                                     onClick={() => setTeamMenuOpen((open) => !open)}
@@ -80,7 +80,7 @@ export default function TablePage() {
                             </div>
                         </div>
                         <div className="overflow-hidden bg-primary-foreground animate-fade-in-up">
-                            <Table className="w-full mb-0 !rounded-md !h-4 scroll-auto">
+                            <Table className="w-full mb-0 !rounded-b-md !h-4 scroll-auto">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>#</TableHead>
@@ -97,7 +97,7 @@ export default function TablePage() {
                                 <TableBody>
                                     {tabelle?.filter((row) => row.Team === activeTeam).map((row) => (
                                         <TableRow
-                                            key={row.Rang}
+                                            key={row.Mannschaft}
                                             className={row.Mannschaft === "Leiben" ? "bg-[#003d11]  font-semibold" : ""}
                                         >
                                             <TableCell>{row.Rang}</TableCell>

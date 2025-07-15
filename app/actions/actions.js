@@ -130,3 +130,19 @@ export async function getTeamLogos() {
             };
         });
 }
+
+export async function getMedienEntries() {
+    const { data, error } = await supabase
+        .from("medien")
+        .select(`
+            *,
+            game:game_id (*)
+        `);
+
+    if (error) {
+        console.error("Error fetching medien with spielplan:", error);
+        return [];
+    }
+
+    return data;
+}
