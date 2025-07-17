@@ -32,14 +32,20 @@ export default function GamePlan_Page() {
     const now = new Date();
 
     const allGames = games
-        .filter((g) => {
-            return g.team == activeTeam;
+        .filter((g) => g.team === activeTeam)
+        .map((g) => {
+            const displayDate = g.scheduled_date ?? g.original_date ?? g.date;
+            return {
+                ...g,
+                displayDate,
+                dateObj: new Date(displayDate),
+            };
         })
-        .map((g) => ({ ...g, dateObj: new Date(g.date) }))
         .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
 
     const upcomingAll = allGames.filter((g) => g.dateObj >= now);
     const playedAll = allGames.filter((g) => g.dateObj < now).reverse();
+
     const upcoming = showAllUpcoming ? upcomingAll : upcomingAll.slice(0, 5);
     const played = showAll ? playedAll : playedAll.slice(0, 5);
 
@@ -114,7 +120,7 @@ export default function GamePlan_Page() {
                                 {/* List of games */}
                                 <div ref={mobileListRef} className="p-3 pb-40 space-y-3 min-h-[110%]">
                                     {mobileGames.map((game, i) => (
-                                        <Gameplan_Card_Mobile key={i} {...game} />
+                                        <Gameplan_Card_Mobile key={i} {...game} date={game.scheduled_date ? game.scheduled_date : game.original_date} />
                                     ))}
                                     <div ref={lastItemRef} className="h-5" />
                                     {mobileGames.length === 0 && <p className="text-center">Keine Spiele verfügbar</p>}
@@ -124,55 +130,55 @@ export default function GamePlan_Page() {
 
                         {/* Desktop View */}
                         <div className="hidden md:block">
-                               <div className="sticky top-0 z-10 p-3 flex justify-center items-center">
-                            <div>
-                                <button
-                                    onClick={() => setTeamMenuOpen((open) => !open)}
-                                    className="inline-flex justify-center w-full px-4 py-2 text-md text-foreground"
-                                >
-                                    {activeTeam} Spielplan
-                                    <svg
-                                        className="-mr-1 ml-2 h-5 w-5"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
+                            <div className="sticky top-0 z-10 p-3 flex justify-center items-center">
+                                <div>
+                                    <button
+                                        onClick={() => setTeamMenuOpen((open) => !open)}
+                                        className="inline-flex justify-center w-full px-4 py-2 text-md text-foreground"
                                     >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M19 9l-7 7-7-7"
-                                        />
-                                    </svg>
-                                </button>
+                                        {activeTeam} Spielplan
+                                        <svg
+                                            className="-mr-1 ml-2 h-5 w-5"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M19 9l-7 7-7-7"
+                                            />
+                                        </svg>
+                                    </button>
 
-                                {teamMenuOpen && (
-                                    <div className="text-foreground bg-black text-center absolute z-10 mt-2 w-36 left-1/2 -translate-x-1/2 rounded-md shadow-lg focus:outline-none">
-                                        <div className="py-1">
-                                            <button
-                                                onClick={() => {
-                                                    setActiveTeam("KM");
-                                                    setTeamMenuOpen(false);
-                                                }}
-                                                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-500"
-                                            >
-                                                KM Spielplan
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setActiveTeam("Res");
-                                                    setTeamMenuOpen(false);
-                                                }}
-                                                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-500"
-                                            >
-                                                Res Spielplan
-                                            </button>
+                                    {teamMenuOpen && (
+                                        <div className="text-foreground bg-black text-center absolute z-10 mt-2 w-36 left-1/2 -translate-x-1/2 rounded-md shadow-lg focus:outline-none">
+                                            <div className="py-1">
+                                                <button
+                                                    onClick={() => {
+                                                        setActiveTeam("KM");
+                                                        setTeamMenuOpen(false);
+                                                    }}
+                                                    className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-500"
+                                                >
+                                                    KM Spielplan
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setActiveTeam("Res");
+                                                        setTeamMenuOpen(false);
+                                                    }}
+                                                    className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-500"
+                                                >
+                                                    Res Spielplan
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
-                        </div>
                             <div className="grid grid-cols-[1fr_1px_1fr] gap-6">
                                 {/* Upcoming */}
                                 <section className="space-y-4">
@@ -189,7 +195,7 @@ export default function GamePlan_Page() {
                                         )}
                                     </div>
                                     {upcoming.map((g, i) => (
-                                        <Gameplan_Card key={i} {...g} />
+                                        <Gameplan_Card key={i} {...g} date={g.scheduled_date ? g.scheduled_date : g.original_date} />
                                     ))}
                                 </section>
 
@@ -210,7 +216,7 @@ export default function GamePlan_Page() {
                                         )}
                                     </div>
                                     {played.map((g, i) => (
-                                        <Gameplan_Card key={i} {...g} />
+                                        <Gameplan_Card key={i} {...g} date={g.scheduled_date ? g.scheduled_date : g.original_date} />
                                     ))}
                                 </section>
                             </div>

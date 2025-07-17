@@ -212,6 +212,11 @@ a {
   @apply transition-colors duration-200  hover:scale-105;
 }
 
+
+h1 {
+  @apply text-4xl font-bold my-2;
+}
+
 .animate-fade-in-up {
   opacity: 0;
   transform: translateY(20px);

@@ -1,3 +1,4 @@
+"import { v4 as uuidv4 } from \"uuid\";"
 "use server";
 import { fetchLeibenGamePlan, fetchLeibenTable } from "@/lib/scraper.js";
 import { supabase } from "../../lib/supabaseClient.js";
@@ -5,6 +6,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export async function getTabelle() {
     const { data, error } = await supabase
@@ -121,8 +123,8 @@ export async function getTeamLogos() {
     }
 
     return data
-        .filter(file => file.name) // Filter out folders
-        .map(file => {
+        .filter((file) => file.name) // Filter out folders
+        .map((file) => {
             const { data: urlData } = supabase.storage.from("logos").getPublicUrl(file.name);
             return {
                 name: file.name,
@@ -132,9 +134,7 @@ export async function getTeamLogos() {
 }
 
 export async function getMedienEntries() {
-    const { data, error } = await supabase
-        .from("medien")
-        .select(`
+    const { data, error } = await supabase.from("medien").select(`
             *,
             game:game_id (*)
         `);
@@ -145,4 +145,70 @@ export async function getMedienEntries() {
     }
 
     return data;
+}
+
+export async function insertMediaGame(selectedGame, videoFile, imageFiles) {
+    
+}
+
+
+export async function getLoggedInUser() {
+    const cookieStore = await cookies();
+    const supabase = createServerComponentClient({ cookies: () => cookieStore });
+
+    const {
+        data: { user },
+        error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+        console.error("Error fetching logged in user:", authError);
+        return null;
+    }
+
+    // Query your public.users table where id matches auth user's id
+    const { data: profile, error: profileError } = await supabase
+        .from("users") // assuming public.users
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+    if (profileError) {
+        console.error("Error fetching user profile:", profileError);
+        return null;
+    }
+
+    return { ...user, profile };
+}
+
+export async function getAvaliableGamesForAddGameDialogDropdown() {
+    const { data: usedGames } = await supabase.from('medien').select('game_id');
+    const usedGameIds = usedGames.map(m => m.game_id).filter(Boolean);
+    const today = new Date().toISOString().split('T')[0];
+
+    const { data: allGames } = await supabase.from('spielplan').select('*');
+
+    const availableGames = allGames.filter(game => {
+        const gameDate = game.scheduled_date ?? game.original_date;
+        return gameDate && gameDate < today && !usedGameIds.includes(game.id);
+    });
+
+    // Remove duplicates on same date + opponent, preferring KM
+    const uniqueGamesMap = new Map();
+
+    availableGames.forEach(game => {
+        const gameDate = game.scheduled_date ?? game.original_date;
+        const opponent = game.away;
+        const uniqueKey = `${gameDate}_${opponent}`;
+
+        const existing = uniqueGamesMap.get(uniqueKey);
+
+        if (!existing || existing.team === "Res") {
+            if (game.team === "KM" || !existing) {
+                uniqueGamesMap.set(uniqueKey, game);
+            }
+        }
+    });
+
+    return Array.from(uniqueGamesMap.values());
 }
