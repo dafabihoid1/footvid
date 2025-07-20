@@ -23,16 +23,31 @@ import { Label } from "@/components/ui/label";
 import { uploadImage } from "@/lib/storage/client";
 import { useState } from "react";
 
-const AddMediaTeamDialog = ({ open, onOpenChange, availableGames }) => {
+export const AddMediaTeamDialog = ({ open, onOpenChange, availableGames }) => {
     const [selectedGame, setSelectedGame] = useState();
     const [videoFile, setVideoFile] = useState(null);
     const [imageFiles, setImageFiles] = useState([]);
 
-    const  handleSubmit = async () => {
+    const handleSubmit = async () => {
+        let imageUrls = [];
+        let videoUrl;
 
-        const test = await uploadImage(imageFiles[0], "media", "photos")
+        imageFiles.map(async (image) => {
+            const imageRes = await uploadImage(image, "media", "photos");
 
-        console.log(test)
+            if (imageRes.error) {
+                console.log(error);
+            }
+
+            imageUrls.push(imageRes.imageUrl);
+        });
+
+        const videoRes = await uploadImage(videoFile, "media", "videos");
+
+        videoUrl = videoRes.imageUrl;
+
+
+        console.log(imageUrls, videoUrl)
         // const res = await insertMediaGame(selectedGame, videoFile, imageFiles);
     };
 

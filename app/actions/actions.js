@@ -1,4 +1,4 @@
-"import { v4 as uuidv4 } from \"uuid\";"
+"import { v4 as uuidv4 } from \"uuid\";";
 "use server";
 import { fetchLeibenGamePlan, fetchLeibenTable } from "@/lib/scraper.js";
 import { supabase } from "../../lib/supabaseClient.js";
@@ -59,6 +59,11 @@ export async function login(data) {
         return error;
     }
 
+    await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+    });
+
     return res;
 }
 
@@ -86,6 +91,11 @@ export async function register(data) {
     if (usersError) {
         return { usersError };
     }
+
+      await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+    });
 
     return { user: res.user, session: res.session };
 }
@@ -147,10 +157,7 @@ export async function getMedienEntries() {
     return data;
 }
 
-export async function insertMediaGame(selectedGame, videoFile, imageFiles) {
-    
-}
-
+export async function insertMediaGame(selectedGame, videoFile, imageFiles) {}
 
 export async function getLoggedInUser() {
     const cookieStore = await cookies();
@@ -182,13 +189,13 @@ export async function getLoggedInUser() {
 }
 
 export async function getAvaliableGamesForAddGameDialogDropdown() {
-    const { data: usedGames } = await supabase.from('medien').select('game_id');
-    const usedGameIds = usedGames.map(m => m.game_id).filter(Boolean);
-    const today = new Date().toISOString().split('T')[0];
+    const { data: usedGames } = await supabase.from("medien").select("game_id");
+    const usedGameIds = usedGames.map((m) => m.game_id).filter(Boolean);
+    const today = new Date().toISOString().split("T")[0];
 
-    const { data: allGames } = await supabase.from('spielplan').select('*');
+    const { data: allGames } = await supabase.from("spielplan").select("*");
 
-    const availableGames = allGames.filter(game => {
+    const availableGames = allGames.filter((game) => {
         const gameDate = game.scheduled_date ?? game.original_date;
         return gameDate && gameDate < today && !usedGameIds.includes(game.id);
     });
@@ -196,7 +203,7 @@ export async function getAvaliableGamesForAddGameDialogDropdown() {
     // Remove duplicates on same date + opponent, preferring KM
     const uniqueGamesMap = new Map();
 
-    availableGames.forEach(game => {
+    availableGames.forEach((game) => {
         const gameDate = game.scheduled_date ?? game.original_date;
         const opponent = game.away;
         const uniqueKey = `${gameDate}_${opponent}`;
