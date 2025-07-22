@@ -3,9 +3,9 @@ import React from "react";
 
 const Game_card = ({ game }) => {
     return (
-        <div className=" transition-transform duration-200 hover:scale-105 cursor-pointer">
+        <div className=" transition-transform duration-200 hover:scale-105 cursor-pointer" onClick={() => {window.location.href = `/medien/${game.game_id}`;}}>
         <div className="relative w-[250px] h-[100px] justify-center align-middle">
-            <Image src="/background.png" fill style={{ borderStartStartRadius: "8px", borderTopRightRadius: "8px",boxShadow: "0 4px 8px rgba(0,0,0,0.15)" }} alt="Background" />
+            <Image src="/background.png" fill sizes="250px" style={{ borderStartStartRadius: "8px", borderTopRightRadius: "8px",boxShadow: "0 4px 8px rgba(0,0,0,0.15)" }} alt="Background" />
            {game && <Image
                 src={game.homeLogo ? game.homeLogo : "/not_existing.png"}
                 alt="Heim-Logo"

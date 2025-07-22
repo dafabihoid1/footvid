@@ -1,4 +1,3 @@
-"import { v4 as uuidv4 } from \"uuid\";";
 "use server";
 import { fetchLeibenGamePlan, fetchLeibenTable } from "@/lib/scraper.js";
 import { supabase } from "../../lib/supabaseClient.js";
@@ -59,11 +58,6 @@ export async function login(data) {
         return error;
     }
 
-    await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-    });
-
     return res;
 }
 
@@ -91,11 +85,6 @@ export async function register(data) {
     if (usersError) {
         return { usersError };
     }
-
-      await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-    });
 
     return { user: res.user, session: res.session };
 }
@@ -157,7 +146,16 @@ export async function getMedienEntries() {
     return data;
 }
 
-export async function insertMediaGame(selectedGame, videoFile, imageFiles) {}
+export async function insertMedienGame(game, photos) {
+    const result = await supabase.from("medien").insert([
+        {
+            game_id: game.id,
+            photos: photos,
+        },
+    ]);
+
+    return result;
+}
 
 export async function getLoggedInUser() {
     const cookieStore = await cookies();
@@ -193,29 +191,47 @@ export async function getAvaliableGamesForAddGameDialogDropdown() {
     const usedGameIds = usedGames.map((m) => m.game_id).filter(Boolean);
     const today = new Date().toISOString().split("T")[0];
 
-    const { data: allGames } = await supabase.from("spielplan").select("*");
+    const { data: allGames } = await supabase.from("spielplan").select("*").eq("team", "KM");
 
     const availableGames = allGames.filter((game) => {
         const gameDate = game.scheduled_date ?? game.original_date;
         return gameDate && gameDate < today && !usedGameIds.includes(game.id);
     });
 
-    // Remove duplicates on same date + opponent, preferring KM
-    const uniqueGamesMap = new Map();
+    return availableGames;
+    // Remove duplicates on same date + opponent, preferring KM (currently just KM gets showen, should be updated in the future maybe)
+    // const uniqueGamesMap = new Map();
 
-    availableGames.forEach((game) => {
-        const gameDate = game.scheduled_date ?? game.original_date;
-        const opponent = game.away;
-        const uniqueKey = `${gameDate}_${opponent}`;
+    // availableGames.forEach((game) => {
+    //     const gameDate = game.scheduled_date ?? game.original_date;
+    //     const opponent = game.away;
+    //     const uniqueKey = `${gameDate}_${opponent}`;
 
-        const existing = uniqueGamesMap.get(uniqueKey);
+    //     const existing = uniqueGamesMap.get(uniqueKey);
 
-        if (!existing || existing.team === "Res") {
-            if (game.team === "KM" || !existing) {
-                uniqueGamesMap.set(uniqueKey, game);
-            }
-        }
-    });
+    //     if (!existing || existing.team === "Res") {
+    //         if (game.team === "KM" || !existing) {
+    //             uniqueGamesMap.set(uniqueKey, game);
+    //         }
+    //     }
+    // });
+    // return Array.from(uniqueGamesMap.values());
+}
 
-    return Array.from(uniqueGamesMap.values());
+export async function getMediaGameById(game_id){
+    const { data, error } = await supabase
+        .from("medien")
+        .select(`
+            *,
+            game:game_id (*)
+        `)
+        .eq("game_id", game_id)
+        .single();
+
+    if (error) {
+        console.error("Error fetching medien with spielplan:", error);
+        return null;
+    }
+
+    return data;
 }

@@ -18,7 +18,7 @@ export default function Navbar() {
         { href: "/", label: "Startseite", Icon: Home, mobileOrder: 3 },
         { href: "/gameplan", label: "Spielplan", Icon: Calendar, mobileOrder: 1 },
         { href: "/table", label: "Tabelle", Icon: Table, mobileOrder: 2 },
-        { href: "/training", label: "Training", Icon: Dumbbell, mobileOrder: 5 },
+        // { href: "/training", label: "Training", Icon: Dumbbell, mobileOrder: 5 },
         { href: "/medien", label: "Medien", Icon: Video, mobileOrder: 4 },
     ];
 

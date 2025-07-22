@@ -1,4 +1,4 @@
-import { insertMediaGame } from "@/app/actions/actions";
+import { insertMedienGame } from "@/app/actions/actions";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -6,7 +6,6 @@ import {
     DialogContent,
     DialogDescription,
     DialogFooter,
-    DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
 import {
@@ -30,34 +29,40 @@ export const AddMediaTeamDialog = ({ open, onOpenChange, availableGames }) => {
 
     const handleSubmit = async () => {
         let imageUrls = [];
-        let videoUrl;
+        // let videoUrl;
 
-        imageFiles.map(async (image) => {
-            const imageRes = await uploadImage(image, "media", "photos");
+        try {
+            imageUrls = await Promise.all(
+                imageFiles.map(async (image) => {
+                    const imageRes = await uploadImage(image, "media", "photos");
+                    if (imageRes.error) {
+                        throw new Error(imageRes.error)
+                    }
 
-            if (imageRes.error) {
-                console.log(error);
+                    return imageRes.imageUrl;
+                })
+            );
+        } catch(error) {
+            console.log(error)
+            throw new Error("Bilder Upload ist fehlgeschlagen. Kontaktieren Sie einen Admin")
+        } finally {
+            if (imageUrls.length > 0) {
+                insertMedienGame(selectedGame, imageUrls);
             }
+        }
 
-            imageUrls.push(imageRes.imageUrl);
-        });
+        // const videoRes = await uploadImage(videoFile, "media", "videos");
 
-        const videoRes = await uploadImage(videoFile, "media", "videos");
+        // videoUrl = videoRes.imageUrl;
 
-        videoUrl = videoRes.imageUrl;
-
-
-        console.log(imageUrls, videoUrl)
         // const res = await insertMediaGame(selectedGame, videoFile, imageFiles);
     };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>neues Spiel hinzufügen</DialogTitle>
-                    <DialogDescription>Lade die gewünschten Medien hoch!</DialogDescription>
-                </DialogHeader>
+                <DialogTitle>neues Spiel hinzufügen</DialogTitle>
+                <DialogDescription>Lade die gewünschten Medien hoch!</DialogDescription>
                 <div className="grid gap-4">
                     <div className="grid gap-3">
                         <Label htmlFor="name-1">Name</Label>
@@ -88,7 +93,7 @@ export const AddMediaTeamDialog = ({ open, onOpenChange, availableGames }) => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-                    <div className="grid gap-3">
+                    {/* <div className="grid gap-3">
                         <Label htmlFor="video-upload">Video hochladen</Label>
                         <Input
                             id="video-upload"
@@ -96,7 +101,7 @@ export const AddMediaTeamDialog = ({ open, onOpenChange, availableGames }) => {
                             accept="video/*"
                             onChange={(e) => setVideoFile(e.target.files[0])}
                         />
-                    </div>
+                    </div> */}
                     <div className="grid gap-3">
                         <Label htmlFor="image-upload">Bilder hochladen</Label>
                         <Input
