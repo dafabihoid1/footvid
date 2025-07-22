@@ -94,7 +94,7 @@ const Medien = () => {
                     {/* Mobile View */}
                     <main className="container lg:hidden"></main>
                     {/* Desktop View */}
-                    <main className="container hidden bg-card p-4 rounded lg:block">
+                    <main className="container  bg-card p-4 rounded lg:block">
                         <div className="flex justify-between items-center">
                             <h1>Medien</h1>
                             {loggedInUser?.profile.system_role == "Admin" && (
